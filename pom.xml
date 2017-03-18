@@ -13,6 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.java.version>1.8</project.java.version>
         <project.lucene.verion>3.0.1</project.lucene.verion>
+        <project.lombok.version>1.16.14</project.lombok.version>
         <project.main.class>fmi.unibuc.ro.Application</project.main.class>
     </properties>
 
@@ -21,6 +22,11 @@
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
             <version>${project.lucene.verion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${project.lombok.version}</version>
         </dependency>
     </dependencies>
 
