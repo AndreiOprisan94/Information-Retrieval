@@ -14,7 +14,7 @@ import java.io.FileFilter;
 import java.io.FileReader;
 import java.util.stream.Stream;
 
-import static fmi.unibuc.ro.types.LuceneConstants.*;
+import static fmi.unibuc.ro.constants.LuceneConstants.*;
 
 @AllArgsConstructor
 public class Indexer {
@@ -26,7 +26,7 @@ public class Indexer {
         System.out.println("Starting indexing process....");
 
         //Create Lucene IndewWriter
-        IndexWriter indexWriter = createIndexWriterInstance();
+        IndexWriter indexWriter = createIndexWriter();
 
         File[] dataDirFiles = getFilteredDataDirFiles();
 
@@ -39,7 +39,7 @@ public class Indexer {
         return numberOfFiles;
     }
 
-    private IndexWriter createIndexWriterInstance() throws Exception{
+    private IndexWriter createIndexWriter() throws Exception{
         File indexDirFile = new File(indexDir);
         Directory directory = FSDirectory.open(indexDirFile);
 

@@ -1,6 +1,9 @@
 package fmi.unibuc.ro;
 
 import fmi.unibuc.ro.indexer.Indexer;
+import fmi.unibuc.ro.searcher.Searcher;
+
+import java.util.Scanner;
 
 public class Application {
 
@@ -15,5 +18,19 @@ public class Application {
 
         System.out.println("Indexing process finished....");
         System.out.println("Number of files processed = " + numberOfFiles);
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please type in what you want to search:");
+
+        while (scanner.hasNext()) {
+            String query = scanner.nextLine();
+            System.out.println("Searching for " + query + "....");
+
+            Searcher searcher = new Searcher(indexDir, query);
+            searcher.search();
+
+            System.out.println("Please type in what you want to search:");
+        }
+        scanner.close();
     }
 }
