@@ -1,18 +1,19 @@
 package fmi.unibuc.ro.searcher;
 
 import lombok.AllArgsConstructor;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.ro.RomanianAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 
-import java.io.File;
+import java.nio.file.Paths;
 
 import static fmi.unibuc.ro.constants.LuceneConstants.*;
 
@@ -21,6 +22,8 @@ public class Searcher {
 
     private String indexDir;
     private String queryString;
+
+    private static final Analyzer analyzer = new RomanianAnalyzer();
 
     public void search() throws Exception {
         IndexSearcher indexSearcher = createIndexSearcher();
@@ -35,18 +38,17 @@ public class Searcher {
             System.out.println("Found in ==> " + doc.get(FULL_PATH));
         }
 
-        indexSearcher.close();
+        indexSearcher.getIndexReader().close();
     }
 
     private IndexSearcher createIndexSearcher() throws Exception{
-        File indexDirFile = new File(indexDir);
-        Directory directory = FSDirectory.open(indexDirFile);
-        return new IndexSearcher(directory);
+        Directory directory = FSDirectory.open(Paths.get(indexDir));
+        DirectoryReader reader = DirectoryReader.open(directory);
+
+        return new IndexSearcher(reader);
     }
 
     private QueryParser createQueryParser() {
-        return new QueryParser(Version.LUCENE_30,
-                               CONTENTS,
-                               new StandardAnalyzer(Version.LUCENE_30));
+        return  new QueryParser(CONTENTS, analyzer);
     }
 }
