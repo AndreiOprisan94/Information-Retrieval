@@ -1,6 +1,8 @@
 package fmi.unibuc.ro.indexer;
 
-import lombok.AllArgsConstructor;
+import fmi.unibuc.ro.util.DataDirectoryParser;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.ro.RomanianAnalyzer;
 import org.apache.lucene.document.Document;
@@ -14,60 +16,49 @@ import org.apache.lucene.store.FSDirectory;
 
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileReader;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
 
 import static fmi.unibuc.ro.constants.LuceneConstants.*;
 
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Indexer {
 
-    private String indexDir;
-    private String dataDir;
+    private IndexWriter indexWriter;
 
     private static final Analyzer analyzer = new RomanianAnalyzer();
 
-    public int index() throws Exception {
-        System.out.println("Starting indexing process....");
+    public static Indexer newInstance(String indexDir) throws Exception{
+        Indexer indexer = new Indexer();
+        indexer.indexWriter = createIndexWriter(indexDir);
 
-        //Create Lucene IndewWriter
-        IndexWriter indexWriter = createIndexWriter();
-
-        File[] dataDirFiles = getFilteredDataDirFiles();
-
-        for (File file : dataDirFiles)
-            indexFile(file, indexWriter);
-
-        int numberOfFiles = indexWriter.numDocs();
-        indexWriter.close();
-
-        return numberOfFiles;
+        return indexer;
     }
 
-    private IndexWriter createIndexWriter() throws Exception{
+    private static IndexWriter createIndexWriter(String indexDir) throws Exception{
         Directory directory = FSDirectory.open(Paths.get(indexDir));
-
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
 
         return new IndexWriter(directory, config);
     }
 
-    private File[] getFilteredDataDirFiles(){
-        FileFilter fileFilter = new TextFileFilter();
-        File dataDirFiles = new File(dataDir);
+    public int index(String dataDir) throws Exception {
+        File[] dataDirFiles = DataDirectoryParser.getOnlyTextFiles(dataDir);
 
-        return Stream.of(dataDirFiles.listFiles())
-                     .filter(fileFilter::accept)
-                     .toArray(File[] :: new);
+        for (File file : dataDirFiles)
+            indexFile(file);
 
+        return indexWriter.numDocs();
     }
 
-    private void indexFile(File file, IndexWriter writer) throws Exception{
+    public void close() throws Exception{
+        indexWriter.close();
+    }
+
+    private void indexFile(File file) throws Exception{
         System.out.println("Indexing " + file.getCanonicalPath());
         Document doc = getDocument(file);
-        writer.addDocument(doc);
+        indexWriter.addDocument(doc);
     }
 
     private Document getDocument(File file) throws Exception {

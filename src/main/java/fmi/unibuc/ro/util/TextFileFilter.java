@@ -1,9 +1,9 @@
-package fmi.unibuc.ro.indexer;
+package fmi.unibuc.ro.util;
 
 import java.io.File;
 import java.io.FileFilter;
 
-public class TextFileFilter implements FileFilter {
+class TextFileFilter implements FileFilter {
 
     @Override
     public boolean accept(File pathname) {
