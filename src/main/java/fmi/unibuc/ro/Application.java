@@ -22,15 +22,16 @@ public class Application {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please type in what you want to search:");
 
+        Searcher searcher = Searcher.newInstance(indexDir);
+
         while (scanner.hasNext()) {
             String query = scanner.nextLine();
             System.out.println("Searching for " + query + "....");
-
-            Searcher searcher = new Searcher(indexDir, query);
-            searcher.search();
-
+            searcher.search(query);
             System.out.println("Please type in what you want to search:");
         }
+
         scanner.close();
+        searcher.close();
     }
 }

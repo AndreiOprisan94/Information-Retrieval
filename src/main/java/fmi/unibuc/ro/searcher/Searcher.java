@@ -1,6 +1,7 @@
 package fmi.unibuc.ro.searcher;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.ro.RomanianAnalyzer;
 import org.apache.lucene.document.Document;
@@ -17,38 +18,45 @@ import java.nio.file.Paths;
 
 import static fmi.unibuc.ro.constants.LuceneConstants.*;
 
-@AllArgsConstructor
-public class Searcher {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Searcher {
 
-    private String indexDir;
-    private String queryString;
+    private IndexSearcher indexSearcher;
+    private QueryParser queryParser;
 
     private static final Analyzer analyzer = new RomanianAnalyzer();
 
-    public void search() throws Exception {
-        IndexSearcher indexSearcher = createIndexSearcher();
+    public static Searcher newInstance(String indexDir) throws Exception {
+        Searcher searcher = new Searcher();
+        searcher.indexSearcher = createIndexSearcher(indexDir);
+        searcher.queryParser = createQueryParser();
 
-        QueryParser queryParser = createQueryParser();
-        Query query = queryParser.parse(queryString);
-
-        TopDocs hits = indexSearcher.search(query, MAX_SEARCH);
-
-        for(ScoreDoc scoreDoc : hits.scoreDocs) {
-            Document doc = indexSearcher.doc(scoreDoc.doc);
-            System.out.println("Found in ==> " + doc.get(FULL_PATH));
-        }
-
-        indexSearcher.getIndexReader().close();
+        return searcher;
     }
 
-    private IndexSearcher createIndexSearcher() throws Exception{
+    private static IndexSearcher createIndexSearcher(String indexDir) throws Exception{
         Directory directory = FSDirectory.open(Paths.get(indexDir));
         DirectoryReader reader = DirectoryReader.open(directory);
 
         return new IndexSearcher(reader);
     }
 
-    private QueryParser createQueryParser() {
+    private static QueryParser createQueryParser() {
         return  new QueryParser(CONTENTS, analyzer);
     }
+
+    public void search(String queryString) throws Exception {
+        Query query = queryParser.parse(queryString);
+        TopDocs hits = indexSearcher.search(query, MAX_SEARCH);
+
+        for(ScoreDoc scoreDoc : hits.scoreDocs) {
+            Document doc = indexSearcher.doc(scoreDoc.doc);
+            System.out.println("Found in ==> " + doc.get(FULL_PATH));
+        }
+    }
+
+    public void close() throws Exception{
+        indexSearcher.getIndexReader().close();
+    }
+
 }
