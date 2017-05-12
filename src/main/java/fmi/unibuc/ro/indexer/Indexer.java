@@ -1,5 +1,6 @@
 package fmi.unibuc.ro.indexer;
 
+import fmi.unibuc.ro.analysis.CustomRomanianAnalyzer;
 import fmi.unibuc.ro.util.DataDirectoryParser;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class Indexer {
 
     private IndexWriter indexWriter;
 
-    private static final Analyzer analyzer = new RomanianAnalyzer();
+    private static final Analyzer analyzer = new CustomRomanianAnalyzer();
 
     public static Indexer newInstance(String indexDir) throws Exception{
         Indexer indexer = new Indexer();

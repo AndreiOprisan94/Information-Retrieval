@@ -1,5 +1,6 @@
 package fmi.unibuc.ro.searcher;
 
+import fmi.unibuc.ro.analysis.CustomRomanianAnalyzer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
@@ -24,7 +25,7 @@ public final class Searcher {
     private IndexSearcher indexSearcher;
     private QueryParser queryParser;
 
-    private static final Analyzer analyzer = new RomanianAnalyzer();
+    private static final Analyzer analyzer = new CustomRomanianAnalyzer();
 
     public static Searcher newInstance(String indexDir) throws Exception {
         Searcher searcher = new Searcher();
