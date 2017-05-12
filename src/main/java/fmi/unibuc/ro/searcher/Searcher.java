@@ -4,7 +4,6 @@ import fmi.unibuc.ro.analysis.CustomRomanianAnalyzer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.ro.RomanianAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
