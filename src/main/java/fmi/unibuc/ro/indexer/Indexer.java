@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -62,8 +63,13 @@ public class Indexer {
 
     private Document getDocument(File file) throws Exception {
         Document document = new Document();
+
         Field contentField = new TextField(CONTENTS, new FileReader(file));
+        Field pathField = new StringField(FULL_PATH, file.getCanonicalPath(),Field.Store.YES);
+
         document.add(contentField);
+        document.add(pathField);
+
         return document;
     }
 
