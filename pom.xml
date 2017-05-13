@@ -18,6 +18,7 @@
     </properties>
 
     <dependencies>
+        <!--Lucene dependencies-->
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
@@ -32,6 +33,18 @@
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-analyzers-common</artifactId>
             <version>${project.lucene.verion}</version>
+        </dependency>
+
+        <!--Tika dependencies-->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>1.14</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parsers</artifactId>
+            <version>1.14</version>
         </dependency>
 
         <dependency>
