@@ -6,11 +6,11 @@ import java.util.stream.Stream;
 
 public final class DataDirectoryParser {
 
-    public static File[] getOnlyTextFiles(String dataDirectory){
-        FileFilter fileFilter = new TextFileFilter();
-        File dataDirFiles = new File(dataDirectory);
+    public static File[] retrieveRegularFiles(String dataDirectory){
+        FileFilter fileFilter = new RegularFileFilter();
+        File[] dataDirFiles = new File(dataDirectory).listFiles();
 
-        return Stream.of(dataDirFiles.listFiles())
+        return Stream.of(dataDirFiles)
                 .filter(fileFilter::accept)
                 .toArray(File[] :: new);
 

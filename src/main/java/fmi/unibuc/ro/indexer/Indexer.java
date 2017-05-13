@@ -13,10 +13,10 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.tika.Tika;
 
 
 import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Paths;
 
 import static fmi.unibuc.ro.constants.LuceneConstants.*;
@@ -27,6 +27,7 @@ public class Indexer {
     private IndexWriter indexWriter;
 
     private static final Analyzer analyzer = new CustomRomanianAnalyzer();
+    private static final Tika tika = new Tika();
 
     public static Indexer newInstance(String indexDir) throws Exception{
         Indexer indexer = new Indexer();
@@ -43,7 +44,7 @@ public class Indexer {
     }
 
     public int index(String dataDir) throws Exception {
-        File[] dataDirFiles = DataDirectoryParser.getOnlyTextFiles(dataDir);
+        File[] dataDirFiles = DataDirectoryParser.retrieveRegularFiles(dataDir);
 
         for (File file : dataDirFiles)
             indexFile(file);
@@ -64,7 +65,7 @@ public class Indexer {
     private Document getDocument(File file) throws Exception {
         Document document = new Document();
 
-        Field contentField = new TextField(CONTENTS, new FileReader(file));
+        Field contentField = new TextField(CONTENTS, tika.parse(file));
         Field pathField = new StringField(FULL_PATH, file.getCanonicalPath(),Field.Store.YES);
 
         document.add(contentField);
