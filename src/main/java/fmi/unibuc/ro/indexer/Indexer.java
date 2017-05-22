@@ -65,7 +65,7 @@ public class Indexer {
     private Document getDocument(File file) throws Exception {
         Document document = new Document();
 
-        Field contentField = new TextField(CONTENTS, tika.parse(file));
+        Field contentField = new TextField(CONTENTS, tika.parseToString(file), Field.Store.YES);
         Field pathField = new StringField(FULL_PATH, file.getCanonicalPath(),Field.Store.YES);
 
         document.add(contentField);
