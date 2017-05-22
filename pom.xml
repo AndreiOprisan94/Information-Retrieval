@@ -34,6 +34,11 @@
             <artifactId>lucene-analyzers-common</artifactId>
             <version>${project.lucene.verion}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-highlighter</artifactId>
+            <version>${project.lucene.verion}</version>
+        </dependency>
 
         <!--Tika dependencies-->
         <dependency>
