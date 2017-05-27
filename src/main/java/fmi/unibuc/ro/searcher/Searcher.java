@@ -1,6 +1,7 @@
 package fmi.unibuc.ro.searcher;
 
 import fmi.unibuc.ro.analysis.CustomRomanianAnalyzer;
+import fmi.unibuc.ro.factory.HighlighterFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
@@ -50,7 +51,7 @@ public final class Searcher {
     public void search(String queryString) throws Exception {
         Query query = queryParser.parse(queryString);
         TopDocs hits = indexSearcher.search(query, MAX_SEARCH);
-        Highlighter highlighter = createHighlighterFor(query);
+        Highlighter highlighter = HighlighterFactory.buildHighlighter(query);
 
         for(ScoreDoc scoreDoc : hits.scoreDocs) {
             Document doc = indexSearcher.doc(scoreDoc.doc);
@@ -61,16 +62,6 @@ public final class Searcher {
             String output = highlighter.getBestFragments(tokenStream, doc.get(CONTENTS), 10, "....");
             System.out.println(output);
         }
-    }
-
-    private Highlighter createHighlighterFor(Query query){
-        Formatter formatter = new SimpleHTMLFormatter("<<", ">>");
-        QueryScorer queryScorer = new QueryScorer(query);
-        Fragmenter fragmenter = new SimpleSpanFragmenter(queryScorer,10);
-        Highlighter highlighter = new Highlighter(formatter, queryScorer);
-        highlighter.setTextFragmenter(fragmenter);
-
-        return highlighter;
     }
 
     public void close() throws Exception{
