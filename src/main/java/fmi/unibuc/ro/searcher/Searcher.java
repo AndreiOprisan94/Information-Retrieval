@@ -2,6 +2,7 @@ package fmi.unibuc.ro.searcher;
 
 import fmi.unibuc.ro.analysis.CustomRomanianAnalyzer;
 import fmi.unibuc.ro.factory.HighlighterFactory;
+import fmi.unibuc.ro.queries.BoostingScoreQuery;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.lucene.analysis.Analyzer;
@@ -13,7 +14,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.highlight.*;
+import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -50,6 +51,7 @@ public final class Searcher {
 
     public void search(String queryString) throws Exception {
         Query query = queryParser.parse(queryString);
+        query = new BoostingScoreQuery(query);
         TopDocs hits = indexSearcher.search(query, MAX_SEARCH);
         Highlighter highlighter = HighlighterFactory.buildHighlighter(query);
 
@@ -60,7 +62,7 @@ public final class Searcher {
 
             TokenStream tokenStream = analyzer.tokenStream(CONTENTS, doc.get(CONTENTS));
             String output = highlighter.getBestFragments(tokenStream, doc.get(CONTENTS), 10, "....");
-            System.out.println(output);
+            System.out.println(output + "\n");
         }
     }
 
