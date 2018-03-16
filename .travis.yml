@@ -1,0 +1,6 @@
+language: java
+
+deploy:
+    provider: releases
+    api_key: "RJEeYq5KPCnM-IF4eWzkpw"
+    skip_cleanup: true
