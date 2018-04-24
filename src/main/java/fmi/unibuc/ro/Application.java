@@ -5,7 +5,7 @@ import fmi.unibuc.ro.searcher.Searcher;
 
 import java.util.Scanner;
 
-public class Application {
+public final class Application {
 
     public static void main(String args[]) throws Exception{
         String indexDir = System.getProperty("indexDir");
